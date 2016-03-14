@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,10 +38,13 @@ public class UserController {
 	
 	@Value("#{commonProperties['pageUnit']}")
 	int pageUnit;
+	
 	@Value("#{commonProperties['pageSize']}")
 	int pageSize;
 	
 	
+	//@RequestMapping("/addUserView.do")
+	//public String addUserView() throws Exception {
 	@RequestMapping( value="addUser", method=RequestMethod.GET )
 	public String addUser() throws Exception{
 	
@@ -52,6 +53,7 @@ public class UserController {
 		return "redirect:/user/addUserView.jsp";
 	}
 	
+	//@RequestMapping("/addUser.do")
 	@RequestMapping( value="addUser", method=RequestMethod.POST )
 	public String addUser( @ModelAttribute("user") User user ) throws Exception {
 
@@ -62,7 +64,7 @@ public class UserController {
 		return "redirect:/user/loginView.jsp";
 	}
 	
-
+	//@RequestMapping("/getUser.do")
 	@RequestMapping( value="getUser", method=RequestMethod.GET )
 	public String getUser( @RequestParam("userId") String userId , Model model ) throws Exception {
 		
@@ -75,20 +77,8 @@ public class UserController {
 		return "forward:/user/getUser.jsp";
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	@RequestMapping( value="getJsonUser/{userId}", method=RequestMethod.GET )
-	public void getJsonUser(	@PathVariable String userId, 
-									 			Model model) throws Exception{
-		
-		System.out.println("/getJsonUser/getUser : GET");
-		//Business Logic
-		User user = userService.getUser(userId);
-		// Model °ú View ¿¬°á
-		model.addAttribute("user", user);
-	}
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-
+	//@RequestMapping("/updateUserView.do")
+	//public String updateUserView( @RequestParam("userId") String userId , Model model ) throws Exception{
 	@RequestMapping( value="updateUser", method=RequestMethod.GET )
 	public String updateUser( @RequestParam("userId") String userId , Model model ) throws Exception{
 
@@ -100,7 +90,8 @@ public class UserController {
 		
 		return "forward:/user/updateUser.jsp";
 	}
-
+	
+	//@RequestMapping("/updateUser.do")
 	@RequestMapping( value="updateUser", method=RequestMethod.POST )
 	public String updateUser( @ModelAttribute("user") User user , Model model , HttpSession session) throws Exception{
 
@@ -113,10 +104,12 @@ public class UserController {
 			session.setAttribute("user", user);
 		}
 		
+		//return "redirect:/getUser.do?userId="+user.getUserId();
 		return "redirect:/user/getUser?userId="+user.getUserId();
 	}
 	
-	
+	//@RequestMapping("/loginView.do")
+	//public String loginView() throws Exception{
 	@RequestMapping( value="login", method=RequestMethod.GET )
 	public String login() throws Exception{
 		
@@ -125,6 +118,7 @@ public class UserController {
 		return "redirect:/user/loginView.jsp";
 	}
 	
+	//@RequestMapping("/login.do")
 	@RequestMapping( value="login", method=RequestMethod.POST )
 	public String login(@ModelAttribute("user") User user , HttpSession session ) throws Exception{
 		
@@ -139,30 +133,11 @@ public class UserController {
 		return "redirect:/index.jsp";
 	}
 	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	@RequestMapping( value="jsonLogin", method=RequestMethod.POST )
-	public void jsonLogin(	@RequestBody User user,
-												HttpSession session,
-												Model model) throws Exception{
-	
-		System.out.println("/user/jsonLogin : POST");
-		//Business Logic
-		System.out.println("::"+user);
-		User dbUser=userService.getUser(user.getUserId());
-		
-		if( user.getPassword().equals(dbUser.getPassword())){
-			session.setAttribute("user", dbUser);
-		}
-		
-		model.addAttribute("user", dbUser);
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
+	//@RequestMapping("/logout.do")
 	@RequestMapping( value="logout", method=RequestMethod.GET )
 	public String logout(HttpSession session ) throws Exception{
 		
-		System.out.println("/user/logout : POST");
+		System.out.println("/user/logout : GET");
 		
 		session.invalidate();
 		
@@ -170,6 +145,7 @@ public class UserController {
 	}
 	
 	
+	//@RequestMapping("/checkDuplication.do")
 	@RequestMapping( value="checkDuplication", method=RequestMethod.POST )
 	public String checkDuplication( @RequestParam("userId") String userId , Model model ) throws Exception{
 		
@@ -182,8 +158,8 @@ public class UserController {
 
 		return "forward:/user/checkDuplication.jsp";
 	}
-
 	
+	//@RequestMapping("/listUser.do")
 	@RequestMapping( value="listUser" )
 	public String listUser( @ModelAttribute("search") Search search , Model model , HttpServletRequest request) throws Exception{
 		
