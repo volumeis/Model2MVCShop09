@@ -7,14 +7,35 @@
 <head>
 <title>상품 목록조회</title>
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
-
-<script type="text/javascript">
-	// 검색 / page 두가지 경우 모두 Form 전송을 위해 JavaScrpt 이용  
-	function fncGetDomainList(currentPage) {
-		document.getElementById("currentPage").value = currentPage;
-	   	document.detailForm.submit();		
-	}
-</script>
+	<!-- CDN(Content Delivery Network) 호스트 사용 -->
+	<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		// 검색 / page 두가지 경우 모두 Form 전송을 위해 JavaScrpt 이용  
+		function fncGetDomainList(currentPage) {
+			$("#currentPage").val(currentPage);
+			$("form").attr("method","POST").attr("action","/product/listProduct?menu=search").submit();
+		}
+		
+		
+		
+		<!-- <a href="javascript:fncGetDomainList('1');">검색</a> -->
+		$(function () {
+			$("td.ct_btn01:contains('검색'	)").bind("click", function(){
+				fncGetDomainList(1);
+			});
+			
+// 			<td align="left"class = "getProduct">
+// 			<input type="hidden" name="prodNo" value="${product.prodNo }">
+// 			${product.prodName}
+// 			</td>
+			   
+ 			$(".getProduct").bind("click", function(){ 
+ 				var prodNo = $(this).find("input").val();
+ 				self.location = "/product/getProduct?prodNo="+prodNo+"&menu=search"
+ 			});
+ 			$(".getProduct").css("color" , "red");
+		});
+	</script>
 </head>
 
 
@@ -23,8 +44,9 @@
 
 <div style="width:98%; margin-left:10px;">
 
-<form name="detailForm" action="/product/listProduct?menu=search" method="post">
+<!-- <form name="detailForm" action="/product/listProduct?menu=search" method="post"> -->
 
+<form name="detailForm">
 <table width="100%" height="37" border="0" cellpadding="0"	cellspacing="0">
 	<tr>
 		<td width="15" height="37">
@@ -64,7 +86,8 @@
 						<img src="/images/ct_btnbg01.gif" width="17" height="23">
 					</td>
 					<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top:3px;">
-						<a href="javascript:fncGetDomainList('1');">검색</a>
+						<!-- <a href="javascript:fncGetDomainList('1');">검색</a> -->
+						검색
 					</td>
 					<td width="14" height="23">
 						<img src="/images/ct_btnbg03.gif" width="14" height="23">
@@ -101,14 +124,29 @@
 		<tr class="ct_list_pop">
 			<td align="center">${ i }</td>
 			<td></td>
-			<td align="left">
-				<c:if test="${ empty product.proTranCode || product.proTranCode == '0' }">
-				<a href="/product/getProduct?prodNo=${product.prodNo}&menu=search"> ${product.prodName} </a>
-				</c:if>
-				<c:if test="${ ! empty product.proTranCode && product.proTranCode != '0' }">
-				${product.prodName}
-				</c:if> 
+			
+			<c:if test="${ empty product.proTranCode || product.proTranCode == '0' }">
+			<td align="left" class = "getProduct">
+			<input type="hidden" name="prodNo" id = "prodNo" value="${product.prodNo }">
+			${product.prodName}
 			</td>
+			</c:if>
+			<c:if test="${product.proTranCode != '0' }">
+			<td align="left">
+			${product.prodName}
+			</td>
+			</c:if>
+			
+
+<!-- 			<td align="left" > -->
+<%-- 				<c:if test="${ empty product.proTranCode || product.proTranCode == '0' }"> --%>
+<%-- 				<a href="/product/getProduct?prodNo=${product.prodNo}&menu=search"> ${product.prodName} </a> --%>
+<%-- 				</c:if> --%>
+<%-- 				<c:if test="${ ! empty product.proTranCode && product.proTranCode != '0' }"> --%>
+<%-- 				${product.prodName} --%>
+<%-- 				</c:if>  --%>
+<!-- 			</td> -->
+			
 			<td></td>
 			<td align="left">${product.price}</td>
 			<td></td>
